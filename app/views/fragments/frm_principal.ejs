@@ -1,0 +1,159 @@
+<!-- Script -->
+    <script>
+        function agregarItem(external){
+            var url = 'http://localhost:3000/agregar' + external;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    refrescar();
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                }
+            });
+        }
+    </script>
+<!-- /Script -->
+
+<!-- Ruta -->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="">Principal</a></li>
+    <li class="breadcrumb-item active">Visión general</li>
+</ol>
+<!-- /Ruta-->
+
+<!-- Alertas -->
+<% if(locals.flash){ %>
+<div class="alert alert-info alert-dismissible fade show">
+    <%- locals.flash %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<% } %>
+<!-- /Alertas -->
+
+<!-- Tarjetas -->
+<div class="row">
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card text-white bg-primary o-hidden h-100">
+            <div class="card-body">
+                <div class="card-body-icon">
+                    <i class="fas fa-fw fa-comments"></i>
+                </div>
+                <div class="mr-5">26 New Messages!</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+                <span class="float-left">View Details</span>
+                <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card text-white bg-warning o-hidden h-100">
+            <div class="card-body">
+                <div class="card-body-icon">
+                    <i class="fas fa-fw fa-list"></i>
+                </div>
+                <div class="mr-5">11 New Tasks!</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+                <span class="float-left">View Details</span>
+                <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card text-white bg-success o-hidden h-100">
+            <div class="card-body">
+                <div class="card-body-icon">
+                    <i class="fas fa-fw fa-shopping-cart"></i>
+                </div>
+                <div class="mr-5">123 New Orders!</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+                <span class="float-left">View Details</span>
+                <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card text-white bg-danger o-hidden h-100">
+            <div class="card-body">
+                <div class="card-body-icon">
+                    <i class="fas fa-fw fa-life-ring"></i>
+                </div>
+                <div class="mr-5">13 New Tickets!</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+                <span class="float-left">View Details</span>
+                <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- /Tarjetas -->
+
+<!-- Slider-->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-image"></i>
+        Galeria de Vinos</div>
+    <div class="card-body">
+
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <% listaVino.forEach(function(vino, i){ %>
+                <% if(i == 0){ %>
+                <div class="carousel-item active slide">
+                    <img class="d-block" src="/img/<%=vino.foto%>" alt="<%=vino.nombre%>">
+                    <div class="carousel-caption d-none d-md-block texts">
+                        <h5><%=vino.nombre%> (<%=vino.marca.nombre%>)</h5>
+                        <p><b>Precio: </b>$<%=vino.precio%><br><b>Quedan: </b><%=vino.cantidad%> unidades</p>
+                        <a id="<%=i%>" href="#" onclick="return false" class="btn btn-warning"><i class="fas fa-shopping-cart"></i>Comprar Ahora</a>
+                        <script>
+                            $('#<%=i%>').click(function(){
+                                agregarItem('<%=vino.external_id%>');
+                            });
+                        </script>
+                    </div>
+                </div>
+                <% }else{ %>
+                <div class="carousel-item slide">
+                    <img class="d-block" src="/img/<%=vino.foto%>" alt="<%=vino.nombre%>">
+                    <div class="carousel-caption d-none d-md-block texts">
+                        <h5><%=vino.nombre%> (<%=vino.marca.nombre%>)</h5>
+                        <p><b>Precio: </b>$<%=vino.precio%><br><b>Quedan: </b><%=vino.cantidad%> unidades</p>
+                        <a id="<%=i%>" href="#" onclick="return false" class="btn btn-warning"><i class="fas fa-shopping-cart"></i>Comprar Ahora</a>
+                        <script>
+                            $('#<%=i%>').click(function () {
+                                agregarItem('<%=vino.external_id%>');
+                            });
+                        </script>
+                    </div>
+                </div>
+                <% }}); %>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    </div>
+    <div class="card-footer small text-muted">Galería - Vinos María</div>
+</div>
+<!-- /Slider-->

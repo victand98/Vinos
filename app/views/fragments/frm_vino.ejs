@@ -1,0 +1,267 @@
+<!-- Script -->
+<script>
+    $().ready(function () {
+        // load countries
+        var url = 'http://restcountries.eu/rest/v2/all';
+        var html;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data, textStatus, jqXHR) {
+                $.each(data, function (i, item) {
+                    html += '<option value="' + item.name + '">' + item.name + '</option>';
+                });
+                $('#paisR, #pais').html(html);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Ocurrió un error: ", jqXHR);
+            }
+        });
+    });
+</script>
+<!-- /Script -->
+
+<!-- Ruta -->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Páginas</li>
+    <li class="breadcrumb-item active">Registrar</li>
+    <li class="breadcrumb-item active"><a href=" ">Vinos</a></li>
+</ol>
+<!-- /Ruta-->
+
+<!-- Alertas -->
+<% if(locals.flash){ %>
+<div class="alert alert-info">
+    <%- locals.flash %>
+</div>
+<% } %>
+<!-- /Alertas -->
+
+<!-- Registro -->
+<div class="card mb-3">
+    <div class="card-header"><i class="fas fa-wine-glass-alt"></i> Nuevo Vino</div>
+    <div class="card-body">
+        <form action="/administracion/vino" method="POST">
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <input type="text" id="nombreVinoR" name="nombreVino" class="form-control" placeholder="Nombre de vino" required="required" autofocus="autofocus">
+                            <label for="nombreVinoR">Nombre de vino</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <input type="date" id="fechaR" name="fecha" class="form-control" required="required">
+                            <label for="fechaR">Fecha</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <input type="text" id="cantidadR" name="cantidad" class="form-control" placeholder="Cantidad de vinos" required="required">
+                            <label for="cantidadR">Cantidad de vinos</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <input type="text" id="precioR" name="precio" class="form-control" placeholder="Precio de vino" required="required">
+                            <label for="precioR">Precio de vino</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <select class="form-control" name="tipo">
+                                <option value="Tinto">Tinto</option>
+                                <option value="Blanco">Blanco</option>
+                                <option value="Espumoso">Espumoso</option>
+                                <option value="Rosado">Rosado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <select class="form-control" id="paisR" name="pais"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-label-group">
+                    <select class="form-control" name="marca">
+                        <% listaMarca.forEach( function(marca, i){%>
+                        <% if(marca.estado){ %>
+                        <option value="<%=marca.id%>"><%=marca.nombre%></option>
+                        <% }}); %>
+                    </select>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary btn-block" value="Registrar Vino">
+        </form>
+    </div>
+    <div class="card-footer small text-muted">Registro de Vino - Vinos Maria</div>
+</div>
+<!-- /Registro -->
+
+<!-- Tabla -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-table"></i>
+        Lista de Vinos</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Marca</th>
+                        <th>Fecha</th>
+                        <th>País</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>N°</th>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Marca</th>
+                        <th>Fecha</th>
+                        <th>País</th>
+                        <th>Acción</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <% listaVino.forEach( function(vino, i){ %>
+                    <tr>
+                        <td><%=(i+1)%></td>
+                        <td><img src="/img/<%=vino.foto%>" alt="" width="50"></td>
+                        <td><%=vino.nombre%></td>
+                        <td><%=vino.tipo%></td>
+                        <td><%=vino.marca.nombre%></td>
+                        <td><%=vino.fecha_creacion%></td>
+                        <td><%=vino.pais%></td>
+                        <td>
+                            <a href="#" id="<%=(i+1)%>" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalModificar">Modificar</a>
+                            <script>
+                                $('#<%=(i+1)%>').click(function () {
+                                    $('#nombreVino').val('<%=vino.nombre%>');
+                                    $('#fecha').val('<%=vino.fecha%>');
+                                    $('#cantidad').val('<%=vino.cantidad%>');
+                                    $('#precio').val('<%=vino.precio%>');
+                                    $('#tipo').val('<%=vino.tipo%>');
+                                    $('#pais').val('<%=vino.pais%>');
+                                    $('#marca').val('<%=vino.id_marca%>');
+                                    $('#external').val('<%=vino.external_id%>')
+                                });
+                            </script>
+                            <a href="/administracion/vino/foto/<%=vino.external_id%>" class="btn btn-sm btn-secondary">Agregar Foto</a>
+                        </td>
+                    </tr>                
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Listado de Vinos - Vinos Maria</div>
+</div>
+<!-- Tabla -->
+
+<!-- Modal Modificar -->
+<div class="modal fade" id="modalModificar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Modificación de Vino</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/administracion/vinoModificar" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="hidden" id="external" name="external">
+                                    <input type="text" id="nombreVino" name="nombreVino" class="form-control" placeholder="Nombre de vino" required="required">
+                                    <label for="nombreVino">Nombre de vino</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="date" id="fecha" name="fecha" class="form-control" required="required">
+                                    <label for="fecha">Fecha</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="text" id="cantidad" name="cantidad" class="form-control" placeholder="Cantidad de vinos" required="required">
+                                    <label for="cantidad">Cantidad de vinos</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="text" id="precio" name="precio" class="form-control" placeholder="Precio de vino" required="required">
+                                    <label for="precio">Precio de vino</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <select class="form-control" id="tipo" name="tipo">
+                                        <option value="Tinto">Tinto</option>
+                                        <option value="Blanco">Blanco</option>
+                                        <option value="Espumoso">Espumoso</option>
+                                        <option value="Rosado">Rosado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <select class="form-control" id="pais" name="pais"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <select class="form-control" id="marca" name="marca">
+                                <% listaMarca.forEach( function(marca, i){%>
+                                <% if(marca.estado){ %>
+                                <option value="<%=marca.id%>"><%=marca.nombre%></option>
+                                <% }else{ %>
+                                <option value="<%=marca.id%>" disabled><%=marca.nombre%></option>
+                                <% }}); %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--/Modal Modificar-->

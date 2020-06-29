@@ -1,0 +1,17 @@
+{
+    "development": {
+        "username": "root",
+        "password": "victor1998",
+        "database": "maria",
+        "host": "localhost",
+        "dialect": "mysql",
+        "operatorsAliases": false
+    },
+    "staging": {
+        "username": "root",
+        "password": "victor1998",
+        "database": "maria",
+        "host": "localhost",
+        "dialect": "mysql"
+    }
+}

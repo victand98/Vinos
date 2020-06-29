@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title><%= titulo %></title>
+
+        <!--Favicon-->
+        <link rel="icon" href="https://www.freeiconspng.com/uploads/wine-glass-png-25.png" sizes="16x16" />
+
+        <!-- Bootstrap core CSS-->
+        <link href="/stylesheets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom fonts for this template-->
+        <link href="/stylesheets/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+        <!-- Page level plugin CSS-->
+        <link href="/stylesheets/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+        <!-- Custom styles for this template-->
+        <link href="/stylesheets/sb-admin.css" rel="stylesheet">
+
+        <!-- JQuery-->
+        <script src="/javascripts/jquery/jquery.min.js"></script>
+
+    </head>
+
+    <body id="page-top">
+        <!-- Script -->
+        <script>
+            function mostrarDatos(data) {
+                var cantidad = 0;
+                var precio = 0;
+                $.each(data, function (i, item) {
+                    cantidad += item.cantidad;
+                    precio += item.precio_total;
+                });
+                $('#cantidad').html((cantidad > 9) ? '9+' : cantidad);
+                $('#detalle').html('<span><i class="fas fa-wine-glass"></i> Cantidad: ' + cantidad + '<br><i class="fas fa-dollar-sign"></i> Precio sin IVA: $' + precio + ' </span>')
+            }
+            
+            function refrescar() {
+                var url = 'http://localhost:3000/listarCarrito';
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data, textStatus, jqXHR) {
+                        mostrarDatos(data);
+                    }, error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                    }
+                });
+            }
+
+            $().ready(function () {
+                refrescar();
+            });
+        </script>
+        <script src="/javascripts/input-numbre.js"> </script>
+        <!-- /Script -->
+
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+            <a class="navbar-brand mr-1" href="/administracion">Administración</a>
+
+            <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Navbar Search -->
+            <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Navbar -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <li class="nav-item dropdown no-arrow mx-1">
+                    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-bell fa-shopping-cart"></i>
+                        <span id="cantidad" class="badge badge-danger">
+                            0
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
+                        <a class="dropdown-item" href="/comprar">Ver detalles</a>
+                        <a class="dropdown-item" href="/comprar#detalles">Comprar</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Vista previa</a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
+                            <div id="detalle" class="col-md-10 justify-content-center"></div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="#">Configuración</a>
+                        <a class="dropdown-item" href="#">Actividad</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Cerrar Sesión</a>
+                    </div>
+                </li>
+            </ul>
+
+        </nav>
+
+        <div id="wrapper">
+
+            <!-- Sidebar -->
+            <ul class="sidebar navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/administracion">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Principal</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>Páginas</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <h6 class="dropdown-header">Registro:</h6>
+                        <a class="dropdown-item" href="/administracion/vino">Vinos</a>
+                        <a class="dropdown-item" href="/administracion/marca">Marca</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>Galeria</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/comprar">
+                        <i class="fas fa-fw fa-cart-plus"></i>
+                        <span>Comprar</span></a>
+                </li>
+            </ul>
+
+            <div id="content-wrapper">
+
+                <!-- Contenido -->
+                <div class="container-fluid">
+                    <%- include(fragmento) %>
+                </div>
+                <!-- /Contenido -->
+
+                <!-- Sticky Footer -->
+                <footer class="sticky-footer">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright © Vinos María</span>
+                        </div>
+                    </div>
+                </footer>
+
+            </div>
+            <!-- /.content-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">¿En realidad desea Salir?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Seleccione "Salir" para cerrar su sesión.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Volver</button>
+                        <a class="btn btn-primary" href="/salir">Salir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="/javascripts/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/javascripts/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Page level plugin JavaScript-->
+        <script src="/javascripts/chart.js/Chart.min.js"></script>
+        <script src="/javascripts/datatables/jquery.dataTables.js"></script>
+        <script src="/javascripts/datatables/dataTables.bootstrap4.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="/javascripts/sb-admin.min.js"></script>
+
+        <!-- Demo scripts for this page-->
+        <script src="/javascripts/demo/datatables-demo.js"></script>
+        <script src="/javascripts/demo/chart-area-demo.js"></script>
+
+        <!-- Firebase push notification -->
+        
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCDdq75h8TjiLrcFHk_tga7bKT6bRE8K38",
+                authDomain: "practica-4480e.firebaseapp.com",
+                databaseURL: "https://practica-4480e.firebaseio.com",
+                projectId: "practica-4480e",
+                storageBucket: "practica-4480e.appspot.com",
+                messagingSenderId: "478511155326"
+            };
+            firebase.initializeApp(config);
+            // Firebase Messaging
+            var messaging = firebase.messaging();
+            messaging.usePublicVapidKey("BM14HL2JMyOWlxdCKdcPBomHB0N-BC_UmLF9RVugf5-IwHVAmE4KIbWJBBDEfUgAB9MV0UwEGDn4QCfhRUVU0Fk");
+            messaging.requestPermission().then(function () {
+                console.log("Permisos para notificaciones");
+                messaging.getToken().then(function (currentToken) {
+                    if (currentToken) {
+                        console.log(currentToken);
+                        //Guardar token
+                    } else {
+                        console.log("No se ha encontrado una instancia valida");
+                    }
+                }).catch(function (error) {
+                    console.log("Error obtenido al administrar token", error);
+                    showToken("Error al recuperar instancia de token", error);
+                    setTokenSentToServer(false);
+                });
+            }).catch(function (error) {
+                console.log("Error con permisos", error);
+            });
+            messaging.onMessage(function (payload) {
+                appendMessage(payload);
+            });
+            function appendMessage(payload) {
+                console.log(payload);
+                var notificacion = '<div class ="alert alert-warning alert-dismissible fade show" role="alert">';
+                notificacion += '<button type="button" class ="close" data-dismiss="alert" arial-label="Close">';
+                notificacion += '<span arial-hidden="true>&times;</span>';
+                notificacion += '</button>';
+                notificacion += '<img src= "' + payload.notification.icon + '" width="25" /><strong>' + payload.notification.title + '</strong>' + payload.notification.body + 'SIIII.';
+                notificacion += '</div>';
+                $("#messages").html(notificacion);
+            }
+        </script>
+    </body>
+</html>

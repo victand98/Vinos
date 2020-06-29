@@ -1,0 +1,26 @@
+<!-- Alertas -->
+<% if(locals.flash){ %>
+<div class="alert alert-info">
+    <%- locals.flash %>
+</div>
+<% } %>
+<!-- /Alertas -->
+
+<!-- Registro -->
+<div class="card mb-3">
+    <div class="card-header"><i class="fas fa-file"></i> Nueva Foto</div>
+    <div class="card-body">
+        <form action="/administracion/vino/foto/guardar" enctype="multipart/form-data" method="POST">
+            <div class="form-group">
+                <div class="form-label-group">
+                    <input type="hidden" id="external_foto" name="external_foto" value="<%=external%>">
+                    <input type="file" id="archivo" name="archivo" class="form-control" required="required">
+                    <label for="archivo">Foto de vino</label>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary btn-block" value="Guardar Foto">
+        </form>
+    </div>
+    <div class="card-footer small text-muted">Registro de Foto - Vinos Maria</div>
+</div>
+<!-- /Registro -->

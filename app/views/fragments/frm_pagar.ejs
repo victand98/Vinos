@@ -1,0 +1,38 @@
+<!-- Ruta -->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Páginas</li>
+    <li class="breadcrumb-item active"><a href=" ">Realizar Pago</a></li>
+</ol>
+<!-- /Ruta-->
+
+<!-- Detalles -->
+<div class="card mb-3">
+    <div class="card-header"><i class="fas fa-paper-plane"></i> Detalle de Compra</div>
+    <div class="card-body text-center">
+        <div class="alert alert-success">
+            <h5 class="card-title">Total a pagar</h5>
+            <p class="card-text"><b>$<%=detalle.total%></b></p>
+            <p class="card-text">
+                <b>Subtotal:</b> $<%=detalle.subtotal%>,
+                <b>Descuento:</b> $<%=detalle.descuento%>,
+                <b>IVA:</b> $<%=detalle.iva%>
+            </p>
+            <a href="/comprar" class="btn btn-primary"><i class="fas fa-long-arrow-alt-left"></i> Volver Atras</a>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Detalles</div>
+</div>
+<!-- /Detalles -->
+
+<!-- Pago -->
+<div class="card mb-3">
+    <div class="card-header"><i class="fas fa-credit-card"></i> Pago</div>
+    <div class="card-body">
+        <!-- Realizar Pago -->
+        <script src = "https://test.oppwa.com/v1/paymentWidgets.js?checkoutId=<%=Checkout%>"></script>
+        <form action = "http://localhost:3000/resultado" class = "paymentWidgets" data-brands = "VISA MASTER AMEX"> </form>
+        <!-- /Forma de Pago -->
+    </div>
+    <div class="card-footer small text-muted">Realizar Pago</div>
+</div>
+<!-- /Pago -->

@@ -1,0 +1,126 @@
+<!-- Ruta -->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Páginas</li>
+    <li class="breadcrumb-item active">Registrar</li>
+    <li class="breadcrumb-item active"><a href=" ">Marcas</a></li>
+</ol>
+<!-- /Ruta-->
+
+<!-- Alertas -->
+<% if(locals.flash){ %>
+<div class="alert alert-info">
+    <%- locals.flash %>
+</div>
+<% } %>
+<!-- /Alertas -->
+
+<!-- Registro -->
+<div class="card mb-3">
+    <div class="card-header"><i class="fas fa-archive"></i> Nueva Marca</div>
+    <div class="card-body">
+        <form action="/administracion/marca" method="POST">
+            <div class="form-group">
+                <div class="form-label-group">
+                    <input type="text" id="nombreMarcaR" name="nombreMarca" class="form-control" placeholder="Nombre de la marca" required="required" autofocus="autofocus">
+                    <label for="nombreMarcaR">Nombre de la marca</label>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary btn-block" value="Registrar Marca">
+        </form>
+    </div>
+    <div class="card-footer small text-muted">Registro de Marca - Vinos Maria</div>
+</div>
+<!-- /Registro -->
+
+<!-- Tabla -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-table"></i>
+        Lista de Marcas</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>N°</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <% listaMarca.forEach( function(marca, i){ %>
+                    <tr>
+                        <td><%=(i+1)%></td>
+                        <td><%=marca.nombre%></td>
+                        <td><%=(marca.estado) ? 'Activo' : 'Inactivo'%></td>
+                        <td>
+                            <a href="#" id="<%=(i+1)%>"class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalModificar">Modificar</a>
+                            <script>
+                                $('#<%=(i+1)%>').click(function () {
+                                    $('#nombreMarca').val('<%=marca.nombre%>');
+                                    $('#external').val('<%=marca.external_id%>');
+                                    $('#estado').val('<%= marca.estado %>');
+                                });
+                            </script>
+                        </td>
+                    </tr>                
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Listado de Marcas - Vinos Maria</div>
+</div>
+<!-- Tabla -->
+
+<!-- Modal Modificar -->
+<div class="modal fade" id="modalModificar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Modificación de Marca</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/administracion/marcaModificar" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="hidden" id="external" name="external" value="0">
+                            <input type="text" id="nombreMarca" name="nombreMarca" class="form-control" placeholder="Nombre de la marca" required="required">
+                            <label for="nombreMarca">Nombre de la marca</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="estado">Estado de Marca:</label>
+                                <div class="form-label-group">
+                                    <select class="form-control" name="estado" id="estado">
+                                        <option value="true">Activo</option>
+                                        <option value="false">Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--/Modal Modificar-->

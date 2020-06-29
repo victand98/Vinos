@@ -1,0 +1,190 @@
+<!-- Script -->
+<script>
+    function item(external, tipo) {
+        var url = 'http://localhost:3000/agregar' + external;
+        url = (tipo == 1) ? 'http://localhost:3000/quitar' + external : url;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                mostrarDatos(data);
+                cargarTabla(data);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            }
+        });
+    }
+    function cargarTabla(data) {
+        var subtotal = 0;
+        var html = '';
+        $.each(data, function (i, item) {
+            html += '<tr>';
+            html += '<td>';
+            html += '<div class="col-md-6">';
+            html += '<div class="input-group">';
+            html += '<span class="input-group-btn">';
+            html += '<button id="rm_' + i + '" type="button" class="btn btn-default btn-number" data-type="minus" data-field="quant[' + i + ']">';
+            html += '<i class="fas fa-minus"></i>';
+            html += '</button>';
+            html += '<script>';
+            html += '$("#rm_' + i + '").click(function(){';
+            html += 'item("' + item.external_id + '", 1);';
+            html += '});';
+            html += '<' + '/script>';
+            html += '</span>';
+            html += '<input type="text" name="quant[' + i + ']" class="form-control input-number" value="' + item.cantidad + '" min="0" max="100">';
+            html += '<span class="input-group-btn">';
+            html += '<button id="add_' + i + '" type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[' + i + ']">';
+            html += '<i class="fas fa-plus"></i>';
+            html += '</button>';
+            html += '<script>';
+            html += '$("#add_' + i + '").click(function () {';
+            html += 'item("' + item.external_id + '", 0);';
+            html += '});';
+            html += '<' + '/script>';
+            html += '</span>';
+            html += '</div>';
+            html += '</div>';
+            html += '</td>';
+            html += '<td>' + item.nombre + ' - ' + item.marca + '</td>';
+            html += '<td>$' + item.precio + '</td>';
+            html += '<td>$' + item.precio_total + '</td>';
+            html += '</tr>';
+            subtotal += item.precio_total;
+        });
+        if(data.length <= 0){
+            $('#pagar').prop('disabled', true);
+        }
+        $("#tb").html(html);
+        calcularTotal(subtotal);
+    }
+
+    function calcularTotal(subtotal) {
+        var descuento = 0;
+        if (subtotal >= 100) {
+            descuento = 0.1;
+        }
+        var desc = subtotal * descuento;
+        desc = Math.round(desc * 100) / 100;
+        var sb = subtotal - desc;
+        var iva = sb * 0.12;
+        iva = Math.round(iva * 100) / 100;
+        var total = sb + iva;
+        total = Math.round(total * 100) / 100;
+        $("#subtotal").val(subtotal);
+        $('#iva').val(iva);
+        $('#descuento').val(desc);
+        $('#total').val(total);
+    }
+
+    function mostrar() {
+        var url = 'http://localhost:3000/listarCarrito';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                mostrarDatos(data);
+                cargarTabla(data);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            }
+        });
+    }
+
+    $().ready(function () {
+        mostrar();
+    });
+</script>
+<!-- /Script -->
+
+<!-- Ruta -->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Páginas</li>
+    <li class="breadcrumb-item active"><a href=" ">Realizar Compra</a></li>
+</ol>
+<!-- /Ruta-->
+
+<!-- Alertas -->
+<% if(locals.flash){ %>
+<div class="alert alert-info">
+    <%- locals.flash %>
+</div>
+<% } %>
+<!-- /Alertas -->
+
+<!-- Tabla -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-shopping-cart"></i>
+        Carrito de Compras</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>Detalles</th>
+                        <th>PU</th>
+                        <th>PT</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>Detalles</th>
+                        <th>PU</th>
+                        <th>PT</th>
+                    </tr>
+                </tfoot>
+                <tbody id="tb">
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Carrito de Compras - Vinos Maria</div>
+</div>
+<!-- Tabla -->
+
+<!-- Detalles -->
+<div id="detalles" class="card mb-3">
+    <div class="card-header"><i class="fas fa-dollar-sign"></i> Realizar Compra</div>
+    <div class="card-body">
+        <form action="/comprar" method="POST">
+            <div class="form-group">
+                <div class="form-label-group">
+                    <input readonly type="text" id="subtotal" name="subtotal" class="form-control" placeholder="Subtotal" required>
+                    <label for="subtotal">Subtotal</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <input readonly type="text" class="form-control" id="descuento" name="descuento" placeholder="Descuento" required>    
+                            <label for="descuento">Descuento</label>   
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-label-group">
+                            <input readonly type="text" id="iva" name="iva" class="form-control" placeholder="Iva" required>
+                            <label for="iva">Iva</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-label-group">
+                    <input readonly type="text" id="total" name="total" class="form-control" placeholder="Total a Pagar" required="required">
+                    <label for="total">Total a Pagar</label>
+                </div>
+            </div>
+            <input type="submit" id="pagar" class="btn btn-primary btn-block" value="Continuar al Pago">
+        </form>
+    </div>
+    <div class="card-footer small text-muted">Realizar compra - Vinos Maria</div>
+</div>
+<!-- /Detalles -->
